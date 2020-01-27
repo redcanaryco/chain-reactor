@@ -2,15 +2,30 @@
 
 # Chain Reactor
 
-Chain Reactor allows you to compose Executable and Linkable Format ([ELF](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format)) binaries that perform sequences of actions like process creation, network connections and more, through the simple configuration of a JSON file. Chain Reactor’s rich configuration settings let you specify the specific [system calls](http://man7.org/linux/man-pages/man2/syscalls.2.html) used to perform these actions, giving you greater granularity when testing security controls.
+Chain Reactor is an open source framework for composing executables that
+simulate adversary behaviors and techniques on Linux endpoints. Teams can
+compose executables that move through the different stages documented in MITRE’s
+[ATT&CK](https://attack.mitre.org/) framework, from running malicious code, to
+establishing persistence, to escalating privileges, and more.
 
-**Chain Reactor enables security teams to compose ELF executables that mimic the multiple stages seen in real world adversary behavior**. Teams can compose executables that move through the different stages documented in MITRE’s [ATT&CK](https://attack.mitre.org/) framework, from running malicious code, to establishing persistence, to escalating privileges, and more.
+Chain Reactor allows you to compose Executable and Linkable Format
+([ELF](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format)) binaries
+that perform sequences of actions like process creation, network connections and
+more, through the simple configuration of a JSON file. Chain Reactor’s rich
+configuration settings let you control the specific
+[system calls](http://man7.org/linux/man-pages/man2/syscalls.2.html) used to
+perform these actions, giving you greater granularity when testing security
+controls.
 
 # How does it work?
 
-Chain Reactor is responsible for running a `reaction`, which is composed of a list of objectives, called `atoms`. Each `atom` can contain one or many actions, called `quarks`. Quarks specify the system call or macro to utilize, and the subsequent arguments to use.  
+Chain Reactor is responsible for running a `reaction`, which is composed of a
+list of objectives, called `atoms`. Each `atom` can contain one or many actions,
+called `quarks`. Quarks specify the action to take and the subsequent arguments
+to use.
 
-While this might sound complex at first, this structure helps with pre-stage setup, multi-stage objectives, and post-stage cleanup.
+While this might sound complex at first, this structure helps with pre-stage
+setup, multi-stage objectives, and post-stage cleanup.
 
 # Getting Started
 
@@ -77,7 +92,7 @@ The details:
 - The first quark utilizes the [execve](http://man7.org/linux/man-pages/man2/execve.2.html) system call to create a hidden directory.
 - The second quark utilizes a built-in function to copy the current running chain reactor process (`/proc/self/exe`) to the newly created hidden directory as a hidden file.
 - The third quark utilizes a different system call, [execveat](http://man7.org/linux/man-pages/man2/execveat.2.html), to execute the hidden chain reactor binary. The `exit` argument instructs the newly created chain reactor process to exit without performing additional operations.
-- The fourth quark utilizes a built-in function to delete the hidden directory and hidden file. As a result, there is now a process running without a backing file on disk.
+- The fourth quark deletes the hidden directory and hidden file.
 
 Here are some questions this chain reaction can help you answer:
 - Does my endpoint security product collect telemetry for all four quarks? Does it handle one, many or all system calls that can be used to execute a binary?
@@ -86,8 +101,6 @@ Here are some questions this chain reaction can help you answer:
 
 
 # Reactions
-
-*Note: This requires `python3` to be installed.*
 
 A reaction is composed of a list of objectives, called `atoms`.
 
@@ -133,7 +146,7 @@ All `atoms` are specified in a JSON data file and are executed in order.
 
 # Quarks
 
-Each `atom` utilizes one or many actions, called `quarks`. Quarks specify the system call or macro to utilize, and the subsequent arguments to use.
+Each `atom` utilizes one or many actions, called `quarks`. Quarks specify the action to take and the subsequent arguments to use.
 
 `Quarks` are executed in order. If a `quark` fails for any reason, subsequent `quarks` will not execute.
 
@@ -152,7 +165,7 @@ Available `quarks` are outlined below.
 ```
 Details:
 - The [execve](http://man7.org/linux/man-pages/man2/execve.2.html) and [execveat](http://man7.org/linux/man-pages/man2/execveat.2.html) `quarks` take the same arguments.
-- The only difference between the two is the underlying syscall that is used. Both will fork the reactor process and execute the list of CLI arguments provided.
+- The only difference between the two quarks is the underlying syscall that is used. Both will fork the reactor process and execute the list of CLI arguments provided.
 - The first argument will be used as the executable path, and the entire list will be passed as its
 arguments.
 - The path environment variable will be included in the search for the
