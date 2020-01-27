@@ -1,1 +1,13 @@
 build
+
+# Editors
+*~
+\#*\#
+*.swp
+*.vscode
+.vs/
+.idea/
+
+# OS artifacts
+.DS_Store
+**/.DS_Store
