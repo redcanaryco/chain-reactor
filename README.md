@@ -95,9 +95,9 @@ The details:
 - The fourth quark deletes the hidden directory and hidden file.
 
 Here are some questions this chain reaction can help you answer:
-- Does my endpoint security product collect telemetry for all four quarks? Does it handle one, many or all system calls that can be used to execute a binary?
-- Does my endpoint security product alert me to the execution of a hidden binary in a hidden directory?
-- Does my endpoint security product alert me to running processes without a backing file on disk?
+- *Visibility*: Does my endpoint security product collect telemetry for all four quarks? Does it handle one, many, or all system calls that can be used to execute a binary?
+- *Detection*: Does my endpoint security product alert me to the execution of a hidden binary in a hidden directory?
+
 
 
 # Reactions
