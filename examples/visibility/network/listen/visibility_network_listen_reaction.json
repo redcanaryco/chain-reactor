@@ -1,0 +1,21 @@
+{
+    "name": "visibility_network_listen",
+    "atoms": [
+        "TCP-SOCKETCALL-IPV4-IP",
+        "TCP-SOCKETCALL-IPV4-DOMAIN",
+        "TCP-SOCKETCALL-IPV6-IP",
+        "TCP-SOCKETCALL-IPV6-DOMAIN",
+        "TCP-SYSCALL-IPV4-IP",
+        "TCP-SYSCALL-IPV4-DOMAIN",
+        "TCP-SYSCALL-IPV6-IP",
+        "TCP-SYSCALL-IPV6-DOMAIN",
+        "UDP-SOCKETCALL-IPV4-IP",
+        "UDP-SOCKETCALL-IPV4-DOMAIN",
+        "UDP-SOCKETCALL-IPV6-IP",
+        "UDP-SOCKETCALL-IPV6-DOMAIN",
+        "UDP-SYSCALL-IPV4-IP",
+        "UDP-SYSCALL-IPV4-DOMAIN",
+        "UDP-SYSCALL-IPV6-IP",
+        "UDP-SYSCALL-IPV6-DOMAIN"
+    ]
+}

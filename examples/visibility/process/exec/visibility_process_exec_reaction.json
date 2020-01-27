@@ -1,0 +1,7 @@
+{
+    "name": "visibility_process_exec",
+    "atoms": [
+        "EXECVE",
+        "EXECVEAT"
+    ]
+}

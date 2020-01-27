@@ -1,0 +1,7 @@
+[
+    {
+        "name" : "FORK-WITH-NETCONN",
+        "fork-and-rename" : [ "whois", "-h", "redcanary.com", "-p", "443", "iioo" ],
+        "connect" : { "method": "socketcall", "protocol": "tcp4", "address": "redcanary.com", "port": 443 }
+    }
+]

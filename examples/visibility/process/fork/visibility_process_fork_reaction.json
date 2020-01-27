@@ -1,0 +1,6 @@
+{
+    "name": "visibility_process_fork",
+    "atoms": [
+        "FORK-WITH-NETCONN"
+    ]
+}

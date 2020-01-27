@@ -1,0 +1,66 @@
+[
+    {
+        "name" : "TCP-SOCKETCALL-IPV4-IP",
+        "listen" : { "method": "socketcall", "protocol": "tcp4", "address": "0.0.0.0", "port": 12400 }
+    },
+    {
+        "name" : "TCP-SOCKETCALL-IPV4-DOMAIN",
+        "listen" : { "method": "socketcall", "protocol": "tcp4", "address": "listen.tcp.socketcall.ipv4.0.0.0.0.xip.io", "port": 12401 }
+    },
+    {
+        "name" : "TCP-SOCKETCALL-IPV6-IP",
+        "listen" : { "method": "socketcall", "protocol": "tcp6", "address": "::/0", "port": 12402 }
+    },
+    {
+        "name" : "TCP-SOCKETCALL-IPV6-DOMAIN",
+        "listen" : { "method": "socketcall", "protocol": "tcp6", "address": "listen.tcp.socketcall.ipv6.0.0.0.0.xip.io", "port": 12403 }
+    },
+    {
+        "name" : "TCP-SYSCALL-IPV4-IP",
+        "listen" : { "method": "syscall", "protocol": "tcp4", "address": "127.0.0.1", "port": 12404 }
+    },
+    {
+        "name" : "TCP-SYSCALL-IPV4-DOMAIN",
+        "listen" : { "method": "syscall", "protocol": "tcp4", "address": "listen.tcp.syscall.ipv4.127.0.0.1.xip.io", "port": 12405 }
+    },
+    {
+        "name" : "TCP-SYSCALL-IPV6-IP",
+        "listen" : { "method": "syscall", "protocol": "tcp6", "address": "::1/128", "port": 12406 }
+    },
+    {
+        "name" : "TCP-SYSCALL-IPV6-DOMAIN",
+        "listen" : { "method": "syscall", "protocol": "tcp6", "address": "listen.tcp.syscall.ipv6.127.0.0.1.xip.io", "port": 12407 }
+    },
+    {
+        "name" : "UDP-SOCKETCALL-IPV4-IP",
+        "listen" : { "method": "socketcall", "protocol": "udp4", "address": "127.0.0.1", "port": 12408 }
+    },
+    {
+        "name" : "UDP-SOCKETCALL-IPV4-DOMAIN",
+        "listen" : { "method": "socketcall", "protocol": "udp4", "address": "listen.udp.socketcall.ipv4.127.0.0.1.xip.io", "port": 12409 }
+    },
+    {
+        "name" : "UDP-SOCKETCALL-IPV6-IP",
+        "listen" : { "method": "socketcall", "protocol": "udp6", "address": "::1/128", "port": 12410 }
+    },
+    {
+        "name" : "UDP-SOCKETCALL-IPV6-DOMAIN",
+        "listen" : { "method": "socketcall", "protocol": "udp6", "address": "listen.udp.socketcall.ipv6.0.0.0.0.xip.io", "port": 12411 }
+    },
+    {
+        "name" : "UDP-SYSCALL-IPV4-IP",
+        "listen" : { "method": "syscall", "protocol": "udp4", "address": "0.0.0.0", "port": 12412 }
+    },
+    {
+        "name" : "UDP-SYSCALL-IPV4-DOMAIN",
+        "listen" : { "method": "syscall", "protocol": "udp4", "address": "listen.udp.syscall.ipv4.0.0.0.0.xip.io", "port": 12413 }
+    },
+    {
+        "name" : "UDP-SYSCALL-IPV6-IP",
+        "listen" : { "method": "syscall", "protocol": "udp6", "address": "::/0", "port": 12414 }
+    },
+    {
+        "name" : "UDP-SYSCALL-IPV6-DOMAIN",
+        "listen" : { "method": "syscall", "protocol": "udp6", "address": "listen.udp.syscall.ipv6.127.0.0.1.xip.io", "port": 12415 }
+    }
+]

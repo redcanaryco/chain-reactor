@@ -1,0 +1,10 @@
+[
+    {
+        "name" : "EXECVE",
+        "execve" : [ "id", "redcanary-test-user-execve" ]
+    },
+    {
+        "name" : "EXECVEAT",
+        "execveat" : [ "id", "redcanary-test-user-execveat" ]
+    }
+]
