@@ -3,7 +3,7 @@
 # Chain Reactor
 
 Chain Reactor is an open source framework for composing executables that can
-simulate adversary behaviors and techniques on Linux endpoints. Executables can perform sequences of actions like process creation, network connections and more, through the simple configuration of a JSON file.
+simulate adversary behaviors and techniques on __Linux__ endpoints. Executables can perform sequences of actions like process creation, network connections and more, through the simple configuration of a JSON file.
 
 Chain Reactor assumes no prior engineering experience and can easily leverage tests or techniques from [Atomic Red Team](https://atomicredteam.io/) and [MITRE ATT&CK](https://attack.mitre.org/).
 
