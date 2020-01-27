@@ -17,7 +17,7 @@ configuration settings let you control the specific
 perform these actions, giving you greater granularity when testing security
 controls.
 
-<p><img src="assets/video.gif" width="500px" /></p>
+<p><img src="assets/capture.gif" /></p>
 
 # How does it work?
 
