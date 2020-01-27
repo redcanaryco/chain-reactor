@@ -1,1 +1,26 @@
 build
+
+# Editors
+*~
+\#*\#
+*.swp
+*.vscode
+.vs
+.idea
+.sublime-project
+
+# Visual Studio external source
+*.suo
+*.sdf
+*.opensdf
+*.user
+
+# OS artifacts
+.DS_Store
+
+# Development artifacts
+.vagrant
+.env
+
+# Ignore backups of retabbed files
+*.notab
