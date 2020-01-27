@@ -1,4 +1,4 @@
-<p><img src="./logo.png" width="225px" /></p>
+<p><img src="assets/logo.png" width="225px" /></p>
 
 # Chain Reactor
 
@@ -16,6 +16,8 @@ configuration settings let you control the specific
 [system calls](http://man7.org/linux/man-pages/man2/syscalls.2.html) used to
 perform these actions, giving you greater granularity when testing security
 controls.
+
+<p><img src="assets/video.gif" width="500px" /></p>
 
 # How does it work?
 
