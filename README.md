@@ -2,20 +2,11 @@
 
 # Chain Reactor
 
-Chain Reactor is an open source framework for composing executables that
-simulate adversary behaviors and techniques on Linux endpoints. Teams can
-compose executables that move through the different stages documented in MITRE’s
-[ATT&CK](https://attack.mitre.org/) framework, from running malicious code, to
-establishing persistence, to escalating privileges, and more.
+Chain Reactor is an open source framework for composing executables that can
+simulate adversary behaviors and techniques on Linux endpoints. Executables can perform sequences of actions like process creation, network connections and more, through the simple configuration of a JSON file. 
 
-Chain Reactor allows you to compose Executable and Linkable Format
-([ELF](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format)) binaries
-that perform sequences of actions like process creation, network connections and
-more, through the simple configuration of a JSON file. Chain Reactor’s rich
-configuration settings let you control the specific
-[system calls](http://man7.org/linux/man-pages/man2/syscalls.2.html) used to
-perform these actions, giving you greater granularity when testing security
-controls.
+Chain Reactor assumes no prior engineering experience and can easily leverage tests or techniques from [Atomic Red Team](https://atomicredteam.io/) and [MITRE ATT&CK](https://attack.mitre.org/).
+
 
 <p><img src="assets/capture.gif" /></p>
 
