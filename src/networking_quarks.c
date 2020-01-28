@@ -395,6 +395,7 @@ int quark_connect(pconnect_t args, int silent)
             args->address, args->port);
     }
 
+    hints.ai_flags = (AI_V4MAPPED | AI_ADDRCONFIG);
     socket_type(args->socket_type, &hints.ai_family, &hints.ai_socktype);
 
     if ((err = getaddrinfo(args->address, NULL, &hints, &result)) || !result) {
@@ -446,6 +447,8 @@ int quark_listen(plisten_t args)
         struct sockaddr_in6 ipv6;
     } listening_address;
 
+    memset(&listening_address, 0, sizeof(listening_address));
+
     LOGY("\tquark: listen(%s %s%s %s:%u)\n",
         args->method == SOCKET_METHOD_SYSCALL ? "syscall" : "socketcall",
         args->socket_type & SOCKET_TYPE_TCP ? "tcp" : "udp",
@@ -466,7 +469,7 @@ int quark_listen(plisten_t args)
         listening_address.ipv6.sin6_port = htons(args->port);
         listening_address.ipv6.sin6_family = AF_INET6;
 
-        if (1 > inet_pton(AF_INET6, args->address, &listening_address.ipv4.sin_addr)) {
+        if (1 > inet_pton(AF_INET6, args->address, &listening_address.ipv6.sin6_addr)) {
             ERROR("\t\tinet_pton failed: %d, %s\n", errno, strerror(errno));
             goto Exit;
         }
