@@ -366,7 +366,7 @@ static int accept_socket(int socket_fd, int __socket_type, int method)
         }
     }
 
-    LOGG("\t\tconnection recieved\n");
+    LOGG("\t\tconnection received\n");
 
 Exit:
 
