@@ -1,0 +1,9 @@
+{
+    "name": "detection_example",
+    "atoms": [
+        "NIX-WHOIS-TRANSFER",
+        "NIX-CURL-PASTESITES",
+        "LINUX-SHM-DIR-EXECUTION",
+        "NIX-HIDDEN-PROCESS-EXEC"
+    ]
+}
