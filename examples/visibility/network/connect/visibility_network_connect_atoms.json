@@ -1,0 +1,66 @@
+[
+    {
+        "name" : "TCP-SOCKETCALL-IPV4-IP",
+        "connect" : { "method": "socketcall", "protocol": "tcp4", "address": "8.8.8.8", "port": 53 }
+    },
+    {
+        "name" : "TCP-SOCKETCALL-IPV4-DOMAIN",
+        "connect" : { "method": "socketcall", "protocol": "tcp4", "address": "connect.tcp.socketcall.ipv4.8.8.8.8.xip.io", "port": 53 }
+    },
+    {
+        "name" : "TCP-SOCKETCALL-IPV6-IP",
+        "connect" : { "method": "socketcall", "protocol": "tcp6", "address": "8.8.4.4", "port": 53 }
+    },
+    {
+        "name" : "TCP-SOCKETCALL-IPV6-DOMAIN",
+        "connect" : { "method": "socketcall", "protocol": "tcp6", "address": "connect.tcp.socketcall.ipv6.8.8.4.4.xip.io", "port": 53 }
+    },
+    {
+        "name" : "TCP-SYSCALL-IPV4-IP",
+        "connect" : { "method": "syscall", "protocol": "tcp4", "address": "9.9.9.9", "port": 53 }
+    },
+    {
+        "name" : "TCP-SYSCALL-IPV4-DOMAIN",
+        "connect" : { "method": "syscall", "protocol": "tcp4", "address": "connect.tcp.syscall.ipv4.9.9.9.9.xip.io", "port": 53 }
+    },
+    {
+        "name" : "TCP-SYSCALL-IPV6-IP",
+        "connect" : { "method": "syscall", "protocol": "tcp6", "address": "149.112.112.112", "port": 53 }
+    },
+    {
+        "name" : "TCP-SYSCALL-IPV6-DOMAIN",
+        "connect" : { "method": "syscall", "protocol": "tcp6", "address": "connect.tcp.syscall.ipv6.149.112.112.112.xip.io", "port": 53 }
+    },
+    {
+        "name" : "UDP-SOCKETCALL-IPV4-IP",
+        "connect" : { "method": "socketcall", "protocol": "udp4", "address": "208.67.222.222", "port": 53 }
+    },
+    {
+        "name" : "UDP-SOCKETCALL-IPV4-DOMAIN",
+        "connect" : { "method": "socketcall", "protocol": "udp4", "address": "connect.udp.socketcall.ipv4.208.67.222.222.xip.io", "port": 53 }
+    },
+    {
+        "name" : "UDP-SOCKETCALL-IPV6-IP",
+        "connect" : { "method": "socketcall", "protocol": "udp6", "address": "208.67.220.220", "port": 53 }
+    },
+    {
+        "name" : "UDP-SOCKETCALL-IPV6-DOMAIN",
+        "connect" : { "method": "socketcall", "protocol": "udp6", "address": "connect.udp.socketcall.ipv6.208.67.220.220.xip.io", "port": 53 }
+    },
+    {
+        "name" : "UDP-SYSCALL-IPV4-IP",
+        "connect" : { "method": "syscall", "protocol": "udp4", "address": "1.1.1.1", "port": 53 }
+    },
+    {
+        "name" : "UDP-SYSCALL-IPV4-DOMAIN",
+        "connect" : { "method": "syscall", "protocol": "udp4", "address": "connect.udp.syscall.ipv4.1.1.1.1.xip.io", "port": 53 }
+    },
+    {
+        "name" : "UDP-SYSCALL-IPV6-IP",
+        "connect" : { "method": "syscall", "protocol": "udp6", "address": "1.0.0.1", "port": 53 }
+    },
+    {
+        "name" : "UDP-SYSCALL-IPV6-DOMAIN",
+        "connect" : { "method": "syscall", "protocol": "udp6", "address": "connect.udp.syscall.ipv6.1.0.0.1.xip.io", "port": 53 }
+    }
+]
