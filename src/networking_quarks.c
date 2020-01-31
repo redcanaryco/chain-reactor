@@ -76,7 +76,7 @@ THE SOFTWARE.
 
 // It is possible to configure a Linux kernel that does not support syscall
 // emulation, however it is highly unlikely to occur in main distros.
-int x86_int0x80(int syscall, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5)
+static int x86_int0x80(int syscall, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5)
 {
     int ret_value;
     asm volatile("int $0x80"
@@ -89,7 +89,7 @@ int x86_int0x80(int syscall, void* arg1, void* arg2, void* arg3, void* arg4, voi
 // Chances are, none of these are to be more than a single page, but still trying
 // to be "correct"
 #define ALLOC_SOCKETCALL_ARGS(SIZE) \
-size_t cb_args = sizeof(int)*3; \
+size_t cb_args = (SIZE); \
 void* args = mmap(NULL, \
     cb_args, \
     PROT_READ | PROT_WRITE, \
@@ -199,7 +199,7 @@ int socketcall_connect(int sockfd, const struct sockaddr *addr, socklen_t addrle
 
 int socketcall_listen(int sockfd, int backlog)
 {
-    ALLOC_SOCKETCALL_ARGS(sizeof(int)*2 + addrlen);
+    ALLOC_SOCKETCALL_ARGS(sizeof(int)*2);
 
     ((int*)args)[0] = sockfd;
     ((int*)args)[1] = backlog;

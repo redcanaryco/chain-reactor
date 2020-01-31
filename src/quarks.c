@@ -213,6 +213,27 @@ Exit:
     return err;
 }
 
+// It is possible to configure a Linux kernel that does not support syscall
+// emulation, however it is highly unlikely to occur in main distros.
+static int x86_int0x80(int syscall, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5)
+{
+    int ret_value;
+    asm volatile("int $0x80"
+            : "=a"(ret_value)
+            : "a"(syscall), "b"(arg1), "c"(arg2), "d"(arg3), "S"(arg4), "D"(arg5)
+            : "memory");
+    return ret_value;
+}
+
+static pid_t do_fork(int method)
+{
+    if (method == FORK_METHOD_LIBC) {
+        return fork();
+    }
+
+    return x86_int0x80(2, 0, 0, 0, 0, 0);
+}
+
 void quark_fork_and_rename(pfork_and_rename_t args, int in_fork_and_rename)
 {
     pid_t pid;
@@ -243,7 +264,7 @@ void quark_fork_and_rename(pfork_and_rename_t args, int in_fork_and_rename)
 
     strlcat(new_path, argv[0], sizeof(new_path));
 
-    switch ((pid = fork()))
+    switch ((pid = do_fork(args->method)))
     {
         case -1:
         {
