@@ -70,7 +70,6 @@ if __name__ == "__main__":
             del atom['name']
             atom_cb = 0
             atom_blob = b''
-            fork_and_rename_depth = 0;
             for k, v in atom.items():
                 quark = b''
                 if ':' in k:
@@ -83,11 +82,12 @@ if __name__ == "__main__":
                     method = { 'execve' : 1, 'execveat' : 2  }.get(k)
                     type = 'exec'
                     quark += pack("<L", method) + parse_argv(v)
-                elif k == 'fork-and-rename':
+                elif k == 'fork-and-rename' or k == 'fork-and-rename-x86':
+                    type = 'fork-and-rename'
                     assert isinstance(v, list), '{} argument must be a list'.format(k)
                     assert len(v) > 0, '{} must have arguments'.format(k)
-                    fork_and_rename_depth += 1
-                    quark += pack("<L", fork_and_rename_depth) + parse_argv(v)
+                    method = { 'fork-and-rename': 2, 'fork-and-rename-x86' : 1 }.get(k)
+                    quark += pack("<L", method) + parse_argv(v)
                 elif k == 'connect' or k == 'listen':
                     method = { 'syscall' : 1, 'socketcall' : 2  }.get(v.get('method'))
                     socket_type = { 'tcp4' : SOCKET_TYPE_TCP | SOCKET_TYPE_IPV4,

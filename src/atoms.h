@@ -31,6 +31,9 @@ typedef char byte_t;
 #define EXEC_METHOD_PATH 1
 #define EXEC_METHOD_DESCRIPTOR 2
 
+#define FORK_METHOD_X86 1
+#define FORK_METHOD_LIBC 2
+
 #define SOCKET_METHOD_SYSCALL 1
 #define SOCKET_METHOD_SOCKETCALL 2
 
@@ -46,7 +49,7 @@ typedef struct {
 } exec_t, *pexec_t;
 
 typedef struct {
-    int depth;
+    int method;
     byte_t argv[];
 } fork_and_rename_t, *pfork_and_rename_t;
 
