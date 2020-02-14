@@ -2,6 +2,8 @@
 
 # Chain Reactor
 
+Announcement blog post: https://redcanary.com/blog/chain-reactor-framework-for-linux/
+
 Chain Reactor is an open source framework for composing executables that can
 simulate adversary behaviors and techniques on __Linux__ endpoints. Executables can perform sequences of actions like process creation, network connections and more, through the simple configuration of a JSON file.
 
