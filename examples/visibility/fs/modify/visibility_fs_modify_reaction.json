@@ -1,0 +1,12 @@
+{
+    "name": "visibility_fs_modify",
+    "atoms": [
+        "TOUCH-TMP-NEW-FILE",
+        "APPEND-EXISTING-FILE",
+        "PREPEND-EXISTING-FILE",
+        "APPEND-EXISTING-FILE-REVERT",
+        "PREPEND-EXISTING-FILE-REVERT",
+        "CHOWN-EXISTING-FILE",
+        "CHMOD-EXISTING-FILE"
+    ]
+}

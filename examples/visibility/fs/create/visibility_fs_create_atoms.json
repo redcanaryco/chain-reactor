@@ -1,0 +1,14 @@
+[
+    {
+        "name" : "TOUCH-TMP-NEW-FILE",
+        "file-touch" : { "path" : "/tmp/cr.test" }
+    },
+    {
+        "name" : "TOUCH-TMP-TRUNCATE-IF-EXISTS",
+        "file-create" : { "path" : "/tmp/cr.test" }
+    },
+    {
+        "name" : "CLEANUP",
+        "remove" : [ "/tmp/cr.test" ]
+    }
+]

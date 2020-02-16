@@ -185,3 +185,93 @@ Details:
 - Any number of targets may be specified.
 - No errors will be generated during this operation.
 - Be careful when specifying paths, as this quark will indiscriminately delete everything specified in the list.
+
+### chown, fchown, fchmodat, lchown
+
+Example:
+
+```
+{
+    "name" : "CHOWN-EXISTING-FILE",
+    "chown" : { "path" : "/tmp/cr.path.test", "user" : "1000", "group" : "nogroup" },
+    "fchown" : { "path" : "/tmp/cr.descriptor.test", "user" : "1000", "group" : "nogroup"  },
+    "fchownat" : { "path" : "/tmp/cr.at.test", "user" : "1000", "group" : "nogroup"  },
+    "lchown" : { "path" : "/tmp/cr.link.test", "user" : "1000", "group" : "nogroup"  }
+}
+```
+
+Details:
+- Change the ownership of a file object
+- `user` or `group` are both strings. If a named user or group does not exist,
+  an attempt will be made to convert the string to a number. In the example above
+  the `user` field will be translated into the `uid` of `1000`, while `group` will
+  is set to `nogroup` a common default group entry, and will be translated to the
+  correct value.
+- It's common that changing ownership requires elevated privileges.
+
+### chmod, fchmod, fchmodat
+
+Example:
+
+```
+{
+    "name" : "CHMOD-EXISTING-FILE",
+    "chmod" : { "path" : "/tmp/cr.path.test", "mode" : "600" },
+    "fchmod" : { "path" : "/tmp/cr.descriptor.test", "mode" : "060" },
+    "fchmodat" : { "path" : "/tmp/cr.at.test", "mode" : "606"  }
+}
+```
+
+Details:
+- Change the file permissions of a target file.
+- `mode` should be a string in [octal format](http://man7.org/linux/man-pages/man2/chmod.2.html).
+
+### file-touch
+
+```
+{
+    "name" : "TOUCH-TMP-NEW-FILE",
+    "file-touch" : { "path" : "/tmp/cr.test" }
+}
+```
+
+Details:
+- Creates a file if it doesn't exist at the target `path`.
+- Does not error if the file already exists.
+
+### file-create
+
+```
+{
+    "name" : "TOUCH-TMP-TRUNCATE-IF-EXISTS",
+    "file-create" : { "path" : "/tmp/cr.test", data : "Hello World!\n", backup-and-revert : false  },
+    "file-create" : { "path" : "/etc/passwd", data : "/etc/passwd", backup-and-revert : true }
+}
+```
+
+Details:
+- Creates a file, truncating if it exits.
+- `data` can a string or a file path. If `data` is a string, all escape sequences
+  will be turned into binary so `\n`, and `\x00` work correctly. When `data` is
+  a file path, that file will be read during composition time, and baked into
+  the chain reactor deliverable.
+- `backup-and-revert` creates a backup of the target file specified by `path`.
+  If the target file does not exist, this field has no effect.
+
+### file-append
+
+```
+{
+    "name" : "PERSIST_CRONTAB",
+    "file-append" : { "path" : "/etc/crontab", data : "\n1 *	* * *	root   /var/www/malware-r-us/userkit\n", backup-and-revert : true  },
+}
+```
+
+Details:
+- Appends to an existing file, fails if the file does not exist.
+- `data` can a string or a file path. If `data` is a string, all escape sequences
+  will be turned into binary so `\n`, and `\x00` work correctly. When `data` is
+  a file path, that file will be read during composition time, and baked into
+  the chain reactor deliverable.
+- `backup-and-revert` creates a backup of the target file specified by `path`.
+  If the target file does not exist, this field has no effect.

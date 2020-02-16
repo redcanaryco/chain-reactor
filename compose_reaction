@@ -4,6 +4,7 @@ import sys
 import stat
 import traceback
 import collections
+from codecs import escape_decode
 from json import loads, JSONDecoder
 from struct import pack, calcsize
 from argparse import ArgumentParser
@@ -13,10 +14,24 @@ SOCKET_TYPE_UDP = (1 << 1)
 SOCKET_TYPE_IPV4 = (1 << 2)
 SOCKET_TYPE_IPV6 = (1 << 3)
 
+FILE_OP_FLAG_CREATE = (1 << 0)
+FILE_OP_FLAG_TRUNCATE = (1 << 1)
+FILE_OP_FLAG_PREPEND = (1 << 2)
+FILE_OP_FLAG_APPEND = (1 << 3)
+FILE_OP_FLAG_EXCL = (1 << 4)
+FILE_OP_FLAG_BACKUP_AND_REVERT = (1 << 5)
+FILE_OP_NO_DATA = (1 << 6)
+
+METHOD_PATH = 1
+METHOD_AT_DESCRIPTOR = 2
+METHOD_DESCRIPTOR = 3
+METHOD_DONT_FOLLOW = 4
+
 import os
 
 supported_quarks = ['execve', 'execveat', 'fork-and-rename',
-    'connect', 'listen', 'copy', 'remove']
+    'connect', 'listen', 'copy', 'remove', 'chown', 'fchown', 'fchownat', 'lchown',
+    'chmod', 'fchmod', 'fchmodat', 'file-touch', 'file-append', 'file-prepend', 'file-create' ]
 
 class AtomDecoder(JSONDecoder):
     def __init__(self, *args, **kwargs):
@@ -79,7 +94,7 @@ if __name__ == "__main__":
                 if k == 'execve' or k == 'execveat':
                     assert isinstance(v, list), '{} argument must be a list'.format(k)
                     assert len(v) > 0, '{} must have arguments'.format(k)
-                    method = { 'execve' : 1, 'execveat' : 2  }.get(k)
+                    method = { 'execve' : METHOD_PATH, 'execveat' : METHOD_AT_DESCRIPTOR }.get(k)
                     type = 'exec'
                     quark += pack("<L", method) + parse_argv(v)
                 elif k == 'fork-and-rename' or k == 'fork-and-rename-x86':
@@ -104,6 +119,42 @@ if __name__ == "__main__":
                     assert isinstance(v, list), '{} argument must be a list'.format(k)
                     assert len(v) > 0, '{} must have arguments'.format(k)
                     quark += pack("<L", 0) + parse_argv(v)
+                elif k in ['chown', 'fchown', 'fchownat', 'lchown']:
+                    type = 'chown'
+                    chown_type = { 'chown' : METHOD_PATH,
+                        'fchown' : METHOD_DESCRIPTOR,
+                        'fchownat' : METHOD_AT_DESCRIPTOR ,
+                        'lchown' : METHOD_DONT_FOLLOW }.get(k)
+                    group = v.get('group', b'').encode('utf8')
+                    user = v.get('user', b'').encode('utf8')
+                    quark += pack ("<L64s64s260s", chown_type, user, group, v.get('path').encode('utf8'))
+                elif k in ['chmod', 'fchmod', 'fchmodat']:
+                    type = 'chmod'
+                    chmod_type = {'chmod' : METHOD_PATH,
+                        'fchmod' : METHOD_DESCRIPTOR,
+                        'fchmodat' : METHOD_AT_DESCRIPTOR }.get(k)
+                    mode = int(str(v.get('mode')), 8)
+                    quark += pack('<LL260s', chmod_type, mode, v.get('path').encode('utf8'))
+                elif k in ['file-touch', 'file-append', 'file-prepend', 'file-create']:
+                    type = 'file-op'
+                    file_op_flags = { 'file-touch' : FILE_OP_FLAG_CREATE | FILE_OP_NO_DATA,
+                        'file-append' : FILE_OP_FLAG_APPEND,
+                        'file-prepend' : 0,
+                        'file-create' : FILE_OP_FLAG_CREATE | FILE_OP_FLAG_TRUNCATE }.get(k)
+
+                    if v.get('backup-and-revert', False):
+                        file_op_flags |= FILE_OP_FLAG_BACKUP_AND_REVERT
+
+                    data = v.get('data', b'')
+                    if data:
+                        if os.path.exists(data):
+                            with open(data, 'rb') as f:
+                                data = f.read()
+                        else:
+                            data = escape_decode(data)[0]
+
+                    quark += pack("<L260sL", file_op_flags,
+                        v.get('path').encode('utf8'), len(data)) + data
                 else:
                     raise Exception("unknown quark {}".format(k))
 
