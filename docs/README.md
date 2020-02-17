@@ -186,7 +186,7 @@ Details:
 - No errors will be generated during this operation.
 - Be careful when specifying paths, as this quark will indiscriminately delete everything specified in the list.
 
-### chown, fchown, fchmodat, lchown
+### chown, fchown, fchownat, lchown
 
 Example:
 
