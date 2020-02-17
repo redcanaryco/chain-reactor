@@ -28,8 +28,10 @@ THE SOFTWARE.
 
 typedef char byte_t;
 
-#define EXEC_METHOD_PATH 1
-#define EXEC_METHOD_DESCRIPTOR 2
+#define METHOD_PATH 1
+#define METHOD_AT_DESCRIPTOR 2
+#define METHOD_DESCRIPTOR 3
+#define METHOD_DONT_FOLLOW 4
 
 #define FORK_METHOD_X86 1
 #define FORK_METHOD_LIBC 2
@@ -41,6 +43,14 @@ typedef char byte_t;
 #define SOCKET_TYPE_UDP  (1 << 1)
 #define SOCKET_TYPE_IPV4 (1 << 2)
 #define SOCKET_TYPE_IPV6 (1 << 3)
+
+#define FILE_OP_FLAG_CREATE (1 << 0)
+#define FILE_OP_FLAG_TRUNCATE (1 << 1)
+#define FILE_OP_FLAG_PREPEND (1 << 2)
+#define FILE_OP_FLAG_APPEND (1 << 3)
+#define FILE_OP_FLAG_EXCL (1 << 4)
+#define FILE_OP_FLAG_BACKUP_AND_REVERT (1 << 5)
+#define FILE_OP_NO_DATA (1 << 6)
 
 #pragma pack(push, 1)
 typedef struct {
@@ -64,6 +74,26 @@ typedef struct {
     int unused;
     byte_t argv[];
 } rm_rf_t, *prm_rf_t, copy_t, *pcopy_t;
+
+typedef struct {
+    int flags;
+    char path[260];
+    unsigned int cb_bytes;
+    char bytes[];
+} file_op_t, *pfile_op_t;
+
+typedef struct {
+    int method;
+    char user[64];
+    char group[64];
+    char path[260];
+} chown_t, *pchown_t;
+
+typedef struct {
+    int method;
+    unsigned int mode;
+    char path[260];
+} chmod_t, *pchmod_t;
 
 typedef struct {
     unsigned int cb;

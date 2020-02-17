@@ -41,6 +41,9 @@ int quark_exec(pexec_t args);
 void quark_fork_and_rename(pfork_and_rename_t args, int in_fork_and_rename);
 void quark_rm_rf(prm_rf_t args);
 int quark_copy(pcopy_t args);
+int quark_chmod(pchmod_t args);
+int quark_chown(pchown_t args);
+int quark_file_op(pfile_op_t args);
 
 int split_atom(patom_t atom, int in_fork_and_rename)
 {
@@ -94,6 +97,18 @@ int split_atom(patom_t atom, int in_fork_and_rename)
             quark_rm_rf((prm_rf_t)quark_body);
         } else if (!strcasecmp("copy", quark->type)) {
             if (-1 == quark_copy((pcopy_t)quark_body)) {
+                goto Exit;
+            }
+        } else if (!strcasecmp("file-op", quark->type)) {
+            if (-1 == quark_file_op((pfile_op_t)quark_body)) {
+                goto Exit;
+            }
+        } else if (!strcasecmp("chmod", quark->type)) {
+            if (-1 == quark_chmod((pchmod_t)quark_body)) {
+                goto Exit;
+            }
+        } else if (!strcasecmp("chown", quark->type)) {
+            if (-1 == quark_chown((pchown_t)quark_body)) {
                 goto Exit;
             }
         } else {

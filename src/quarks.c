@@ -41,6 +41,8 @@ THE SOFTWARE.
 #include <limits.h>
 #include <libgen.h>
 #include <syscall.h>
+#include <grp.h>
+#include <pwd.h>
 
 #include "atoms.h"
 #include "util.h"
@@ -77,7 +79,7 @@ int quark_exec(pexec_t args)
 
     char** ii = argv;
     char** arg = argv;
-    LOGY("\tquark: %s(\"", EXEC_METHOD_PATH == args->method ? "execve" : "execveat");
+    LOGY("\tquark: %s(\"", METHOD_PATH == args->method ? "execve" : "execveat");
     while (*arg) {
         LOGY("%s ", *arg);
         arg++;
@@ -117,7 +119,7 @@ int quark_exec(pexec_t args)
                 }
             }
 
-            if (EXEC_METHOD_DESCRIPTOR == args->method) {
+            if (METHOD_AT_DESCRIPTOR == args->method) {
                 char resolved_path[PATH_MAX+1] = {0};
 
                 memcpy(resolved_path, expanded_argv[0], strlen(expanded_argv[0]));
@@ -165,7 +167,7 @@ int quark_exec(pexec_t args)
 
             dup2(original_stdout, 2);
             ERROR("\t\t%s(%s) failed: %d, %s\n",
-                EXEC_METHOD_PATH == args->method ? "execvp" : "execveat",
+                METHOD_PATH == args->method ? "execvp" : "execveat",
                 expanded_argv[0], errno, strerror(errno));
             if (errno == ENOENT) {
                 exit(127);
@@ -268,7 +270,7 @@ void quark_fork_and_rename(pfork_and_rename_t args, int in_fork_and_rename)
     {
         case -1:
         {
-            ERROR("\tfork failed: %d, %s\n", errno, strerror(errno));
+            ERROR("\t\tfork failed: %d, %s\n", errno, strerror(errno));
             rm_rf(new_path);
             exit(0);
         }
@@ -278,7 +280,7 @@ void quark_fork_and_rename(pfork_and_rename_t args, int in_fork_and_rename)
             LOGB("\tfork-and-rename(%d) started\n", getpid());
 
             if (-1 == copy(getenv("CR_PATH"), new_path)) {
-                ERROR("\tcopy(%s, %s) failed: %d, %s\n", getenv("CR_PATH"),
+                ERROR("\t\tcopy(%s, %s) failed: %d, %s\n", getenv("CR_PATH"),
                     new_path, errno, strerror(errno));
                 exit(1);
             }
@@ -341,7 +343,227 @@ int quark_copy(pcopy_t args)
     free_argv(argv);
 
     if (-1 == err) {
-        ERROR("\tcopy failed: %d, %s\n", errno, strerror(errno));
+        ERROR("\t\tcopy failed: %d, %s\n", errno, strerror(errno));
+    }
+
+    return err;
+}
+
+static const char* __chmod_method(int method)
+{
+    switch (method)
+    {
+        case METHOD_PATH: return "chmod";
+        case METHOD_DESCRIPTOR: return "fchmod";
+        case METHOD_AT_DESCRIPTOR: return "fchmodat";
+        default: break;
+    }
+    return "unknown";
+}
+
+int quark_chmod(pchmod_t args)
+{
+    int err = -1;
+    int fd = -1;
+
+    LOGY("\tquark: %s mode=%o target=\"%s\"\n",
+        __chmod_method(args->method), args->mode, args->path);
+
+    switch (args->method)
+    {
+        case METHOD_PATH:
+        case METHOD_AT_DESCRIPTOR:
+            if (METHOD_PATH == args->method) {
+                err = chmod(args->path, args->mode);
+            } else {
+                err = fchmodat(-1, args->path, args->mode, 0);
+            }
+            break;
+        case METHOD_DESCRIPTOR:
+            fd = open(args->path, O_PATH);
+            if (-1 == fd) {
+                ERROR("\t\topen failed: %d, %s\n", errno, strerror(errno));
+                goto Exit;
+            }
+
+            err = fchmod(fd, args->mode);
+            break;
+
+        default:
+            break;
+    }
+
+    if (-1 == err) {
+        ERROR("\t\t%s failed: %d, %s\n",
+            __chmod_method(args->method), errno, strerror(errno));
+    }
+
+Exit:
+    if (-1 != fd) {
+        close(fd);
+    }
+
+    return err;
+}
+
+static const char* __chown_method(int method)
+{
+    switch (method)
+    {
+        case METHOD_PATH: return "chown";
+        case METHOD_DESCRIPTOR: return "fchown";
+        case METHOD_AT_DESCRIPTOR: return "fchownat";
+        case METHOD_DONT_FOLLOW: return "lchown";
+        default: break;
+    }
+    return "unknown";
+}
+
+int quark_chown(pchown_t args)
+{
+    int err = -1;
+    int fd = -1;
+    struct stat target_stat = {0};
+
+    LOGY("\tquark: %s user=%s, group=%s, target=\"%s\"\n",
+        __chown_method(args->method), args->user, args->group, args->path);
+
+    if (-1 == stat(args->path, &target_stat)) {
+        ERROR("\t\tstat failed: %d, %s\n", errno, strerror(errno));
+        goto Exit;
+    }
+
+    if (strlen(args->user)) {
+        struct passwd* pwd = getpwnam(args->user);
+        // If no passwd was found, try converting to an integer
+        if (!pwd) {
+            target_stat.st_uid = (uid_t)strtol(args->user, NULL, 10);
+        } else {
+            target_stat.st_uid = pwd->pw_uid;
+        }
+    }
+
+    if (strlen(args->group)) {
+        struct group* group = getgrnam(args->group);
+        // If no group was found, try converting to an integer
+        if (!group) {
+            target_stat.st_gid = (gid_t)strtol(args->group, NULL, 10);
+        } else {
+            target_stat.st_gid = group->gr_gid;
+        }
+    }
+
+    if (METHOD_DESCRIPTOR == args->method) {
+        fd = open(args->path, O_PATH);
+        if (-1 == fd) {
+            ERROR("\t\topen failed: %d, %s\n", errno, strerror(errno));
+            goto Exit;
+        }
+
+        err = fchown(fd, target_stat.st_uid, target_stat.st_gid);
+    } else if (METHOD_PATH == args->method) {
+        err = chown(args->path, target_stat.st_uid, target_stat.st_gid);
+    } else if (METHOD_DONT_FOLLOW == args->method) {
+        err = lchown(args->path, target_stat.st_uid, target_stat.st_gid);
+    } else {
+        err = fchownat(-1, args->path, target_stat.st_uid, target_stat.st_gid, 0);
+    }
+
+    if (err) {
+        ERROR("\t\t%s failed: %d, %s\n",
+            __chown_method(args->method), errno, strerror(errno));
+        goto Exit;
+    }
+
+Exit:
+
+    if (-1 != fd) {
+        close(fd);
+    }
+
+    return err;
+}
+
+static const char* __file_op_method(int flags)
+{
+    // Mask off the flags that don't relate to method types
+    flags &= ~(FILE_OP_FLAG_BACKUP_AND_REVERT | FILE_OP_NO_DATA);
+    switch (flags)
+    {
+        case 0: return "file-prepend";
+        case FILE_OP_FLAG_CREATE: return "file-touch";
+        case FILE_OP_FLAG_APPEND: return "file-append";
+        case (FILE_OP_FLAG_CREATE | FILE_OP_FLAG_TRUNCATE): return "file-create";
+        default: break;
+    }
+    return "unknown";
+}
+
+static const int __file_op_flags(int flags)
+{
+    int __flags = O_CLOEXEC | O_RDWR;
+
+    if (FILE_OP_FLAG_CREATE & flags) {
+        __flags |= O_CREAT;
+    }
+
+    if (FILE_OP_FLAG_APPEND & flags) {
+        __flags |= O_APPEND;
+    }
+
+    if (FILE_OP_FLAG_CREATE & flags) {
+        __flags |= O_CREAT;
+    }
+
+    if (FILE_OP_FLAG_TRUNCATE & flags) {
+        __flags |= O_TRUNC;
+    }
+
+    return __flags;
+}
+
+int quark_file_op(pfile_op_t args)
+{
+    int err = -1;
+    int fd = -1;
+    char backup_path[PATH_MAX] = {0};
+
+    LOGY("\tquark: %s backup-and-revert=%s data-len=%u target=\"%s\"\n",
+        __file_op_method(args->flags),
+        args->flags & FILE_OP_FLAG_BACKUP_AND_REVERT ? "yes" : "no",
+        args->cb_bytes,
+        args->path);
+
+    if (args->flags & FILE_OP_FLAG_BACKUP_AND_REVERT) {
+        strcpy(backup_path, args->path);
+        strcat(backup_path, ".cr.backup");
+        copy(args->path, backup_path);
+    }
+
+    fd = open(args->path, __file_op_flags(args->flags));
+    if (-1 == fd) {
+        ERROR("\t\topen failed: %d, %s\n", errno, strerror(errno));
+        goto Exit;
+    }
+    fchmod(fd, 0700);
+
+    if (!(args->flags & FILE_OP_NO_DATA) && args->cb_bytes) {
+        if (-1 == write(fd, args->bytes, args->cb_bytes)) {
+            ERROR("\t\twrite failed: %d, %s\n", errno, strerror(errno));
+            goto Exit;
+        }
+    }
+
+    err = 0;
+Exit:
+
+    if (-1 != fd) {
+        close(fd);
+    }
+
+    if (args->flags & FILE_OP_FLAG_BACKUP_AND_REVERT) {
+        copy(backup_path, args->path);
+        unlink(backup_path);
     }
 
     return err;

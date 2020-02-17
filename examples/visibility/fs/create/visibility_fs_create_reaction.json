@@ -1,0 +1,8 @@
+{
+    "name": "visibility_fs_create",
+    "atoms": [
+        "TOUCH-TMP-NEW-FILE",
+        "TOUCH-TMP-TRUNCATE-IF-EXISTS",
+        "CLEANUP"
+    ]
+}

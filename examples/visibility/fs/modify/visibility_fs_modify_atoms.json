@@ -1,0 +1,44 @@
+[
+    {
+        "name" : "TOUCH-TMP-NEW-FILE",
+        "file-touch" : { "path" : "/tmp/cr.test" },
+        "file-touch" : { "path" : "/tmp/cr.path.test" },
+        "file-touch" : { "path" : "/tmp/cr.descriptor.test" },
+        "file-touch" : { "path" : "/tmp/cr.at.test" },
+        "file-touch" : { "path" : "/tmp/cr.link.test" }
+    },
+    {
+        "name" : "CLEANUP",
+        "remove" : [ "/tmp/cr.test", "/tmp/cr.path.test",
+            "/tmp/cr.descriptor.test", "/tmp/cr.at.test", "/tmp/cr.link.test"]
+    },
+    {
+        "name" : "APPEND-EXISTING-FILE",
+        "file-append" : { "path" : "/tmp/cr.test", "data": "      World!\n\nGoodbye\n"}
+    },
+    {
+        "name" : "APPEND-EXISTING-FILE-REVERT",
+        "file-append" : { "path" : "/tmp/cr.path.test", "backup-and-revert" : true, "data": "World!\n\nGoodbye\n"}
+    },
+    {
+        "name" : "PREPEND-EXISTING-FILE",
+        "file-prepend" : { "path" : "/tmp/cr.test", "data": "Hello "}
+    },
+    {
+        "name" : "PREPEND-EXISTING-FILE-REVERT",
+        "file-prepend" : { "path" : "/tmp/cr.path.test", "backup-and-revert" : true, "data": "Hello "}
+    },
+    {
+        "name" : "CHOWN-EXISTING-FILE",
+        "chown" : { "path" : "/tmp/cr.path.test", "user" : "1000", "group" : "nogroup" },
+        "fchown" : { "path" : "/tmp/cr.descriptor.test", "user" : "1000", "group" : "nogroup"  },
+        "fchownat" : { "path" : "/tmp/cr.at.test", "user" : "1000", "group" : "nogroup"  },
+        "lchown" : { "path" : "/tmp/cr.link.test", "user" : "1000", "group" : "nogroup"  }
+    },
+    {
+        "name" : "CHMOD-EXISTING-FILE",
+        "chmod" : { "path" : "/tmp/cr.path.test", "mode" : "600" },
+        "fchmod" : { "path" : "/tmp/cr.descriptor.test", "mode" : "060" },
+        "fchmodat" : { "path" : "/tmp/cr.at.test", "mode" : "606"  }
+    }
+]
