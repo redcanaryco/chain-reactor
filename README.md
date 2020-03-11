@@ -68,13 +68,15 @@ Let’s start with a basic chain reaction:
 `atoms.json`
 
 ```
-{
-    "name" : "HIDDEN-PROCESS-EXEC",
-    "execve" : [ "mkdir”, “-p”, “/tmp/.hidden” ],
-    "copy" : [ “/proc/self/exe", "/tmp/.hidden/.chain_reactor_hidden" ],
-    "execveat" : [ "/tmp/.hidden/.chain_reactor_hidden", "exit" ],
-    "remove" : [ "/tmp/.hidden" ]
-}
+[
+    {
+        "name" : "HIDDEN-PROCESS-EXEC",
+        "execve" : [ "mkdir”, “-p”, “/tmp/.hidden” ],
+        "copy" : [ “/proc/self/exe", "/tmp/.hidden/.chain_reactor_hidden" ],
+        "execveat" : [ "/tmp/.hidden/.chain_reactor_hidden", "exit" ],
+        "remove" : [ "/tmp/.hidden" ]
+    }
+]
 ```
 
 To build the ELF executable, we run the following:
