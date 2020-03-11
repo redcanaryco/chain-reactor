@@ -71,8 +71,8 @@ Let’s start with a basic chain reaction:
 [
     {
         "name" : "HIDDEN-PROCESS-EXEC",
-        "execve" : [ "mkdir”, “-p”, “/tmp/.hidden” ],
-        "copy" : [ “/proc/self/exe", "/tmp/.hidden/.chain_reactor_hidden" ],
+        "execve" : [ "mkdir", "-p", "/tmp/.hidden" ],
+        "copy" : [ "/proc/self/exe", "/tmp/.hidden/.chain_reactor_hidden" ],
         "execveat" : [ "/tmp/.hidden/.chain_reactor_hidden", "exit" ],
         "remove" : [ "/tmp/.hidden" ]
     }
