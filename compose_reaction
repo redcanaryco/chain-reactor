@@ -63,12 +63,21 @@ if __name__ == "__main__":
     parser.add_argument("atom_file", help="The path to the atoms definition file.")
     parser.add_argument("reaction_file", help="The path to the reaction chain file.")
     parser.add_argument("output", help="The path to where the completed reaction should be written")
+    parser.add_argument("--no-banner", action="store_true", help="Do not display the Red Canary banner on execution")
 
     options = parser.parse_args()
 
     assert os.path.exists(os.path.join(script_directory, 'build/_X86_64/chain_reactor')), "You must `make` chain_reactor first"
 
     try:
+        settings_section = b''
+        settings_flags = 0
+
+        if options.no_banner:
+            settings_flags |= (1 << 0)
+
+        settings_section = pack("<L", settings_flags)
+
         reaction_json = loads(open(options.reaction_file, 'rb').read().decode('utf8'))
         atom_json = loads(open(options.atom_file, 'rb').read().decode('utf8'), cls=AtomDecoder)
 
@@ -170,7 +179,7 @@ if __name__ == "__main__":
 
         with open(os.path.join(script_directory, 'build/_X86_64/chain_reactor'), 'rb') as rf:
             with open(options.output, 'wb') as wf:
-                wf.write(rf.read() + atoms_section + reaction_section)
+                wf.write(rf.read() + settings_section + atoms_section + reaction_section)
 
         st = os.stat(options.output)
         os.chmod(options.output, st.st_mode | stat.S_IEXEC)

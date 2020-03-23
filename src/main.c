@@ -40,6 +40,8 @@ THE SOFTWARE.
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(*a))
 
+#define FLAGS_NO_BANNER (1 << 0)
+
 typedef struct {
     char name[64];
     unsigned int num_reactions;
@@ -52,6 +54,11 @@ typedef struct {
     atom_t atoms[];
 } atoms_t, *patoms_t;
 
+typedef struct {
+    unsigned int flags;
+} settings_t, *psettings_t;
+
+static psettings_t g_settings = NULL;
 static patoms_t g_atoms = NULL;
 static preactions_t g_reactions = NULL;
 
@@ -80,7 +87,8 @@ static void initialize()
     }
 
     // The atoms and reaction are appended to the end of the ELF executable.
-    g_atoms = (patoms_t)((char*)self_exe + g_elf_size);
+    g_settings = (psettings_t)((char*)self_exe + g_elf_size);
+    g_atoms = (patoms_t)((char*)self_exe + g_elf_size + sizeof(*g_settings));
     g_reactions = (preactions_t)((char*)g_atoms + g_atoms->cb);
 }
 
@@ -106,7 +114,9 @@ void main(int argc, char** argv)
     initialize();
 
     if (!in_fork_and_rename) {
-        LOG("%s", red_canary());
+        if (!(g_settings->flags & FLAGS_NO_BANNER)) {
+            LOG("%s", red_canary());
+        }
         LOGB("chain reaction" ANSI_COLOR_CYAN " \"%s\"" ANSI_COLOR_RESET " %d %d\n",
             g_reactions->name, getuid(), geteuid());
     }
