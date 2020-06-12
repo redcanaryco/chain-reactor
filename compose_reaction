@@ -81,6 +81,10 @@ if __name__ == "__main__":
         reaction_json = loads(open(options.reaction_file, 'rb').read().decode('utf8'))
         atom_json = loads(open(options.atom_file, 'rb').read().decode('utf8'), cls=AtomDecoder)
 
+        assert reaction_json.get('name', None) != None, 'The reaction file appears malformed, or the arguments are out of order'
+        assert len(atom_json) > 0, 'The atom file contains no atoms, or the arguments are out of order'
+        assert atom_json[0].get('name', None) != None, 'The atom file appears malformed, or the arguments are out of order'
+
         reaction_section = pack("<64sL",
             reaction_json['name'].encode('utf8'),
             len(reaction_json['atoms']))
