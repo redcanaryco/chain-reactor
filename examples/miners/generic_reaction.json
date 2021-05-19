@@ -1,0 +1,13 @@
+{
+    "name": "generic_miner",
+    "atoms": [
+        "DOWNLOAD-MINER",
+        "STOP-SERVICES",
+        "KILL-COMPETITORS",
+        "HIDE-MINER",
+        "PERSIST-CRONTAB",
+        "RUN-MINER",
+        "CONNECT-POOL",
+        "CLEANUP"
+    ]
+}
