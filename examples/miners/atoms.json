@@ -57,6 +57,7 @@
   },
   {
     "name": "STOP-SERVICES",
-    "fork-and-rename": [ "systemctl", "stop", "aliyun.service"  ]
+    "fork-and-rename": [ "kill", "-9", "aliyun"  ],
+    "fork-and-rename": [ "systemctl", "stop", "apparmor.service"  ]
   }
 ]
