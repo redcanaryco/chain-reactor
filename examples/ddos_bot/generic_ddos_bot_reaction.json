@@ -1,0 +1,9 @@
+{
+    "name": "generic_ddos_bot",
+    "atoms": [
+        "STAGE-DIRECTORY",
+        "DELETE-BOT",
+        "DOWNLOAD-BOT",
+        "EXECUTE-BOT"
+    ]
+}
