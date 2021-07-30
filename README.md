@@ -21,4 +21,4 @@ For information about the philosophy and development of the atomic family of
 projects, visit our website at <https://atomicredteam.io>.
 
 Check the [license](LICENSE) for information regarding the distribution and
-modification of AtomicTestHarnesses.
+modification of Chain Reactor.
