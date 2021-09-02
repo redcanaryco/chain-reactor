@@ -44,6 +44,8 @@ int quark_copy(pcopy_t args);
 int quark_chmod(pchmod_t args);
 int quark_chown(pchown_t args);
 int quark_file_op(pfile_op_t args);
+void quark_sleep(psleep_t args);
+
 
 int split_atom(patom_t atom, int in_fork_and_rename)
 {
@@ -111,6 +113,8 @@ int split_atom(patom_t atom, int in_fork_and_rename)
             if (-1 == quark_chown((pchown_t)quark_body)) {
                 goto Exit;
             }
+        } else if (!strcasecmp("sleep", quark->type)) {
+            quark_sleep((psleep_t)quark_body);
         } else {
             ERROR("unknown quark type %s\n", quark->type);
             errno = EINVAL;

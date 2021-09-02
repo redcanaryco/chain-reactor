@@ -568,3 +568,12 @@ Exit:
 
     return err;
 }
+
+void quark_sleep(psleep_t args)
+{
+    unsigned int seconds = 0;
+
+    seconds = args->seconds;
+    LOGY("\tquark: sleep seconds=%d\n", seconds);
+    sleep(seconds);
+}
