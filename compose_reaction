@@ -64,6 +64,7 @@ if __name__ == "__main__":
     parser.add_argument("reaction_file", help="The path to the reaction chain file.")
     parser.add_argument("output", help="The path to where the completed reaction should be written")
     parser.add_argument("--no-banner", action="store_true", help="Do not display the Red Canary banner on execution")
+    parser.add_argument("--no-wordexp", action="store_true", help="Do not shell-expand parameters for exec quarks")
 
     options = parser.parse_args()
 
@@ -75,6 +76,8 @@ if __name__ == "__main__":
 
         if options.no_banner:
             settings_flags |= (1 << 0)
+        if options.no_wordexp:
+            settings_flags |= (1 << 1)
 
         settings_section = pack("<L", settings_flags)
 
