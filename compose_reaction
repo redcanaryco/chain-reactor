@@ -31,7 +31,7 @@ import os
 
 supported_quarks = ['execve', 'execveat', 'fork-and-rename',
     'connect', 'listen', 'copy', 'remove', 'chown', 'fchown', 'fchownat', 'lchown',
-    'chmod', 'fchmod', 'fchmodat', 'file-touch', 'file-append', 'file-prepend', 'file-create' ]
+    'chmod', 'fchmod', 'fchmodat', 'file-touch', 'file-append', 'file-prepend', 'file-create', 'sleep' ]
 
 class AtomDecoder(JSONDecoder):
     def __init__(self, *args, **kwargs):
@@ -171,6 +171,11 @@ if __name__ == "__main__":
 
                     quark += pack("<L260sL", file_op_flags,
                         v.get('path').encode('utf8'), len(data)) + data
+                elif k == 'sleep':
+                    type = 'sleep'
+                    assert isinstance(v, int), '{} argument must be an integer'.format(k)
+                    assert v > 0, '{} argument must be positive'.format(k)
+                    quark += pack("<L", v)
                 else:
                     raise Exception("unknown quark {}".format(k))
 
