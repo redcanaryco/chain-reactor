@@ -37,10 +37,9 @@ THE SOFTWARE.
 
 #include "util.h"
 #include "atoms.h"
+#include "settings.h"
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(*a))
-
-#define FLAGS_NO_BANNER (1 << 0)
 
 typedef struct {
     char name[64];
@@ -92,6 +91,11 @@ static void initialize()
     g_reactions = (preactions_t)((char*)g_atoms + g_atoms->cb);
 }
 
+int check_settings_flag(unsigned int flag)
+{
+  return (g_settings->flags & flag);
+}
+
 void main(int argc, char** argv)
 {
     char transform[33] = {0};
@@ -114,7 +118,7 @@ void main(int argc, char** argv)
     initialize();
 
     if (!in_fork_and_rename) {
-        if (!(g_settings->flags & FLAGS_NO_BANNER)) {
+        if (!check_settings_flag(FLAGS_NO_BANNER)) {
             LOG("%s", red_canary());
         }
         LOGB("chain reaction" ANSI_COLOR_CYAN " \"%s\"" ANSI_COLOR_RESET " %d %d\n",

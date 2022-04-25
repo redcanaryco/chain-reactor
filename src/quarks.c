@@ -46,6 +46,7 @@ THE SOFTWARE.
 
 #include "atoms.h"
 #include "util.h"
+#include "settings.h"
 
 int quark_connect(pconnect_t args);
 int quark_listen(plisten_t args);
@@ -94,8 +95,9 @@ int quark_exec(pexec_t args)
     // +1 so the syscalls are happy, they expect a null terminated array
     expanded_argv = (char**)calloc(argc + 1, sizeof(*expanded_argv));
 
+    int no_wordexp = check_settings_flag(FLAGS_NO_WORDEXP);
     for (int jj = 0; jj < argc; ++jj) {
-        if (wordexp(argv[jj], &expanded_arg, WRDE_REUSE)) {
+        if (no_wordexp || wordexp(argv[jj], &expanded_arg, WRDE_REUSE)) {
             expanded_argv[jj] = strdup(argv[jj]);
         } else {
             expanded_argv[jj] = strdup(expanded_arg.we_wordv[0]);
@@ -567,4 +569,13 @@ Exit:
     }
 
     return err;
+}
+
+void quark_sleep(psleep_t args)
+{
+    unsigned int seconds = 0;
+
+    seconds = args->seconds;
+    LOGY("\tquark: sleep seconds=%d\n", seconds);
+    sleep(seconds);
 }

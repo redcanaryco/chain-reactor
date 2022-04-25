@@ -101,6 +101,10 @@ typedef struct {
 } quark_t, *pquark_t ;
 
 typedef struct {
+    unsigned int seconds;
+} sleep_t, *psleep_t;
+
+typedef struct {
     unsigned int cb;
     char name[64];
     unsigned int num_quarks;
