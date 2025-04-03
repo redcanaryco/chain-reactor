@@ -2,7 +2,7 @@
 
 # Chain Reactor
 
-Chain Reactor is an open-source tool for testing detection and response
+Chain Reactor is an open source tool for testing detection and response
 coverage on Linux machines. The tool generates executables that simulate
 sequences of actions like process creation and network connection. Chain Reactor
 assumes no prior engineering experience; the tool consumes JSON, so customizing
